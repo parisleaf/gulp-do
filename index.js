@@ -3,6 +3,7 @@
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
+var Promise = global.Promise || require('es6-promise');
 
 function scriptFilter(filename) {
   return /(\.js$)/i.test(path.extname(filename));
@@ -12,15 +13,8 @@ var defaults = {
   taskDir: './gulp',
 };
 
-function GulpDo(options) {
+function GulpDo() {
   var self = this;
-
-  if (typeof options === 'string') {
-    this.options = _.merge({}, defaults, { projectRoot: options });
-  }
-  else {
-    this.options = _.merge({}, defaults, options);
-  }
 
   this.tasks = {};
 
@@ -34,7 +28,14 @@ function GulpDo(options) {
     return this.tasks[name];
   };
 
-  this.configure = function(gulp) {
+  this.configure = function(gulp, options) {
+    if (typeof options === 'string') {
+      this.options = _.merge({}, defaults, { projectRoot: options });
+    }
+    else {
+      this.options = _.merge({}, defaults, options);
+    }
+
     // Import tasks from tasks directory
     var filenames = fs.readdirSync(this.options.taskDir)
       .filter(scriptFilter)
