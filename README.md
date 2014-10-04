@@ -64,9 +64,17 @@ bar
 var task = require('gulp-do');
 ```
 
-### `task.configure(gulp, options)`
+### `task.configure(gulp, [options])`
 
 Call this once in your gulpfile, passing an instance of gulp. The only valid option right now is `taskDir`, which defaults to `./gulp`. If `options` is a string instead of an object, it overrides `taskDir`.
+
+### `task.do(taskname, [taskArgs...])`
+
+Perform task. Returns a promise that resolves when task is complete.
+
+### `task.get(taskname)`
+
+Returns function for task.
 
 ## License
 
