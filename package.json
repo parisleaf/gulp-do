@@ -2,6 +2,8 @@
   "name": "gulp-do",
   "version": "1.0.0",
   "description": "Directory-based, promisified task management for Gulp",
+  "homepage": "https://github.com/parisleaf/gulp-do.git",
+  "repository": "https://github.com/parisleaf/gulp-do.git",
   "main": "index.js",
   "dependencies": {
     "lodash": "^2.4.1",
