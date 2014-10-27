@@ -3,7 +3,8 @@
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
-var Promise = global.Promise || require('es6-promise');
+global.Promise = global.Promise || require('es6-promise').Promise;
+var streamToPromise = require('./lib/stream-to-promise');
 
 function scriptFilter(filename) {
   return /(\.js$)/i.test(path.extname(filename));
@@ -21,7 +22,18 @@ function GulpDo() {
   this.do = function() {
     var name = arguments[0];
     var args = arguments.length ? [].slice.call(arguments, 1) : [];
-    return Promise.resolve(this.tasks[name].apply(this.tasks, args));
+
+    var task = this.tasks[name].apply(this.tasks, args);
+
+    if (isPromise(task)) {
+      return task;
+    }
+    else if (isStream(task)) {
+      return streamToPromise(task);
+    }
+    else {
+      return Promise.resolve(task);
+    }
   };
 
   this.get = function(name) {
@@ -53,7 +65,7 @@ function GulpDo() {
         var task = self.tasks[taskName];
 
         // Check if task is a promise
-        if (task && typeof task.then === 'function') {
+        if (isPromise(task)) {
           return task;
         }
         // Else assume it is a function
@@ -65,5 +77,24 @@ function GulpDo() {
   };
 }
 
+/**
+ * Test if input is a promise
+ * @param input - Value to test
+ * @returns {Boolean}
+ */
+function isPromise(input) {
+  return input && typeof input.then === 'function';
+}
+
+/**
+ * Test if input is a stream
+ * @param input - Value to test
+ * @returns {Boolean}
+ */
+function isStream(input) {
+  return !!input && typeof input.on === 'function';
+}
+
 var task = new GulpDo();
-module.exports = task;
+exports = module.exports = task;
+exports.streamToPromise = streamToPromise;
