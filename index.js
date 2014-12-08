@@ -3,7 +3,7 @@
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
-global.Promise = global.Promise || require('es6-promise').Promise;
+var Promise = global.Promise || require('bluebird');
 var streamToPromise = require('./lib/stream-to-promise');
 
 function scriptFilter(filename) {
