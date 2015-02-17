@@ -1,5 +1,7 @@
 # gulp-do
 
+## Don't use this. Realized it's a stupid idea.
+
 Directory-based, promisified task management for Gulp
 
 ## Installation
